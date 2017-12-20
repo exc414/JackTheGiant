@@ -70,7 +70,7 @@ public class CloudSpawner : MonoBehaviour
 	/**
 	 * Shuffle/Randomized at which places the clouds are created/spawn at.
 	 */
-	private void shuffleClouds(GameObject[] arrayToShuffle)
+	private void shuffleGameObjects(GameObject[] arrayToShuffle)
 	{
 		int random;
 		int arrLength = arrayToShuffle.Length;
@@ -91,7 +91,7 @@ public class CloudSpawner : MonoBehaviour
 	private void createClouds()
 	{
 		//Randomized the clouds
-		shuffleClouds(clouds);
+		shuffleGameObjects(clouds);
 
 		//Starts at zero because we want to start the Y position at the center of the screen.
 		//X position is randomize.
@@ -110,37 +110,11 @@ public class CloudSpawner : MonoBehaviour
 			//be display outside of the bouds of the world.
 			cloudPosition.x = Random.Range(minX, maxX);
 
-			//At the start randomized the X position of the cloud from the MID (0) position to
-			//the MAX (3) position which means the cloud will show up somewhere on the RIGHT
-			//quandrant of the world. 0 -> MAX WIDTH is right. Then set the position to 1.
-			//On the next iteration if its 1 we know that the previous cloud was set to the 
-			//RIGHT quadrant. Meaning this one should be to the left. Thus we choose a number
-			//for the x position smaller than zero. 0 -> -3 LEFT. The next else if follow
-			//the same pattern they just shorten the positions that the clouds could be at
-			//to give variation for the cloud placement.
-			if(controlCloudPositionX == 0)
-			{
-				cloudPosition.x = Random.Range(0.0f, maxX);
-				controlCloudPositionX = 1;
-			}
-			else if(controlCloudPositionX == 1)
-			{
-				cloudPosition.x = Random.Range(0.0f, minX);
-				controlCloudPositionX = 2;
-			}
-			else if (controlCloudPositionX == 2)
-			{
-				cloudPosition.x = Random.Range(1.0f, maxX);
-				controlCloudPositionX = 3;
-			}
-			else if (controlCloudPositionX == 3)
-			{
-				cloudPosition.x = Random.Range(-1.0f, minX);
-				controlCloudPositionX = 0;
-			}
+			//Set the clouds X axis positioning.
+			cloudPosition.x = setCloudPosition();
 
-			//Same the current's cloud position. This allows us to know where we must
-			//place the following cloud. Y axis wise.
+			//Save the current's cloud position. Once the loop is over we will have the
+			//last cloud's position.
 			lastCloudPositionY = positionY;
 
 			//Assign the new X and Y axis values
@@ -198,5 +172,80 @@ public class CloudSpawner : MonoBehaviour
 		//on top of the clouds. Else the player will be under the cloud.
 		savedCloudPosition.y += 0.8f;
 		player.transform.position = savedCloudPosition;
+	}
+
+	//Executes when a cloud collides with the cloud spawner.
+	void OnTriggerEnter2D(Collider2D target)
+	{
+		//Filter for cloud objects only.
+		if(target.tag == "Cloud" || target.tag == "Deadly")
+		{
+			//The lastCloudPosition comes from the createCloud() method.
+			if(target.transform.position.y == lastCloudPositionY)
+			{
+				//Shuffle all game items before re-laying them out again.
+				shuffleGameObjects(clouds);
+				shuffleGameObjects(collectables);
+
+				Vector3 targetCloudPoistion = target.transform.position;
+
+				for(int i = 0; i < clouds.Length; i++)
+				{
+					//If the cloud is not active, meaning is set to GONE. Then
+					//activated and position it. Maintaining the distance between
+					//clouds in mind. Cloud Collector makes the cloud objects not
+					//be active in the hierarchy.
+					if(!clouds[i].activeInHierarchy)
+					{
+						//Set the clouds X axis positioning.
+						targetCloudPoistion.x = setCloudPosition();
+
+						//Set target clouds Y axis coordinates and activate it.
+						targetCloudPoistion.y -= distanceBetweenClouds;
+
+						//Save the current's cloud position. Once the loop is over we will have 
+						//the last cloud's position.
+						lastCloudPositionY = targetCloudPoistion.y;
+
+						clouds[i].transform.position = targetCloudPoistion;
+						clouds[i].SetActive(true);
+					}
+				}
+			}
+		}
+	}
+
+	private float setCloudPosition()
+	{
+		//At the start randomized the X position of the cloud from the MID (0) position to
+		//the MAX (3) position which means the cloud will show up somewhere on the RIGHT
+		//quandrant of the world. 0 -> MAX WIDTH is right. Then set the position to 1.
+		//On the next iteration if its 1 we know that the previous cloud was set to the 
+		//RIGHT quadrant. Meaning this one should be to the left. Thus we choose a number
+		//for the x position smaller than zero. 0 -> -3 LEFT. The next else if follow
+		//the same pattern they just shorten the positions that the clouds could be at
+		//to give variation for the cloud placement.
+		if (controlCloudPositionX == 0)
+		{
+			controlCloudPositionX = 1;
+			return Random.Range(0.0f, maxX);
+		}
+		else if(controlCloudPositionX == 1)
+		{
+			controlCloudPositionX = 2;
+			return Random.Range(0.0f, minX);
+		}
+		else if(controlCloudPositionX == 2)
+		{
+			controlCloudPositionX = 3;
+			return Random.Range(1.0f, maxX);
+		}
+		else if(controlCloudPositionX == 3)
+		{
+			controlCloudPositionX = 0;
+			return Random.Range(-1.0f, minX);
+		}
+
+		return Random.Range(0.0f, maxX);
 	}
 }
