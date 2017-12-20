@@ -64,7 +64,7 @@ public class CloudSpawner : MonoBehaviour
 		//width. Say 6. Means left to mid = -3 to 0 and mid to right 0 -> 3
 		maxX = worldBounds.x - 0.5f;
 		minX = -worldBounds.x + 0.5f; //Since its the min we must ADD instead of subtract.
-		print("Max X Pos : " + maxX + " Min X Pos : " + minX);
+		//print("Max X Pos : " + maxX + " Min X Pos : " + minX);
 	}
 
 	/**

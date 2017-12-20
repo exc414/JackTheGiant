@@ -4,19 +4,12 @@ using UnityEngine;
 
 public class BGCollector : MonoBehaviour 
 {
-
-	void Awake()
+	//This works exactly the same as the cloud collector.
+	void OnTriggerEnter2D(Collider2D target)
 	{
-		
-	}
-	
-	void Start() 
-	{
-		
-	}
-	
-	void Update() 
-	{
-		
+		if(target.tag == "Background")
+		{
+			target.gameObject.SetActive(false);
+		}
 	}
 }
