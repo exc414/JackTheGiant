@@ -1,22 +1,38 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class MainMenuController : MonoBehaviour 
 {
+	void Start() 
+	{
+		
+	}
 
-	void Awake()
+	public void startGame()
 	{
-		
+		SceneManager.LoadScene("Gameplay");
 	}
-	
-	void Start () 
+
+	public void highScoreMenu()
 	{
-		
+		SceneManager.LoadScene("Highscore");
 	}
-	
-	void Update () 
+
+	public void optionsMenu()
 	{
-		
+		SceneManager.LoadScene("OptionsMenu");
 	}
+
+	public void quitGame()
+	{
+		Application.Quit();
+	}
+
+	public void musicButton()
+	{
+
+	}
+
 }

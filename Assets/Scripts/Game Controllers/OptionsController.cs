@@ -1,22 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class OptionsController : MonoBehaviour 
 {
+	
+	void Start() 
+	{
+		
+	}
 
-	void Awake()
+	public void goBackToMainMenu()
 	{
-		
-	}
-	
-	void Start () 
-	{
-		
-	}
-	
-	void Update () 
-	{
-		
+		SceneManager.LoadScene("MainMenu");
 	}
 }
