@@ -5,7 +5,7 @@ using UnityEngine;
 public class CloudSpawner : MonoBehaviour 
 {
 	//SerializeField allows this clouds field to be available in the unity editor.
-	//Use this instead of public on the variable so that other classes cannot see this var.
+	//Use this instead of public on the variable so that other classes cannot see this variable.
 	[SerializeField]
 	private GameObject[] clouds;
 
